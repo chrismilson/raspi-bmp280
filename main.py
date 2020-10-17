@@ -99,7 +99,8 @@ def getCalibratedData(bus, calibrationData=None):
     var2 = (temperatureData >> 4) - tempCal[0]
     var2 = (((var2 * var2) >> 12) * tempCal[2]) >> 14
     t_fine = var1 + var2
-    temperature = ((t_fine * 5 + 128) >> 8) / 100
+    temperature = (t_fine * 5 + 128) >> 8
+    temperature = temperature / 100
 
     var1 = t_fine - 128000
     var2 = var1 * var1 * presCal[5]
@@ -116,7 +117,7 @@ def getCalibratedData(bus, calibrationData=None):
     var1 = (presCal[8] * (pressure >> 13) * (pressure >> 13)) >> 25
     var2 = (presCal[7] * pressure) >> 19
     pressure = ((pressure + var1 + var2) >> 8) + (presCal[6] << 4)
-    pressure = pressure / 100
+    pressure = pressure / 25600
 
     return temperature, pressure
 
