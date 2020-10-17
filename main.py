@@ -70,7 +70,7 @@ def getCalibrationData(bus):
 
     # There are three temperature values and nine pressure values.
     for i in range(12):
-        val = (buffer[2 * i + 1] << 8) | buffer[2 * i]
+        val = (buffer[2 * i] << 8) | buffer[2 * i + 1]
         if i != 0 and i != 3 and val >= 1 << 15:
             val -= 1 << 16
 
