@@ -95,24 +95,28 @@ def getCalibratedData(bus, calibrationData=None):
     # [here](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf)
     # I did not decide on this implementation and I believe it to be VERY hard
     # to read, letalone debug. Not the best.
-    var1 = (temperatureData / 16384 - tempCal[0] / 1024) * tempCal[1]
-    var2 = temperatureData / 131072 - tempCal[0] / 8192
-    var2 = var2 * var2 * tempCal[2]
+    var1 = (((temperatureData >> 3) - (tempCal[0] << 1)) * tempCal[1]) >> 11
+    var2 = (temperatureData >> 4) - tempCal[0]
+    var2 = (((var2 * var2) >> 12) * tempCal[2]) >> 14
     t_fine = var1 + var2
-    temperature = t_fine / 5120
+    temperature = ((t_fine * 5 + 128) >> 8) / 100
 
-    var1 = t_fine / 2 - 64000
-    var2 = var1 * var1 * presCal[5] / 32768
-    var2 = var2 + var1 * presCal[4] * 2
-    var2 = var2 / 4 + presCal[3] * 65536
-    var1 = presCal[2] * var1 * var1 / 524288 + presCal[1] * var1 / 524288
-    var1 = (1 + var1 / 32768) * presCal[0]
+    var1 = t_fine - 128000
+    var2 = var1 * var1 * presCal[5]
+    var2 = var2 + ((var1 * presCal[4]) << 17)
+    var2 = var2 + (presCal[3] << 35)
+    var1 = ((var1 * var1 * presCal[2]) >> 8) + ((var1 * presCal[1]) << 12)
+    var1 = (((1 << 47) + var1) * presCal[0]) >> 33
+
+    if var1 == 0:
+        return temperature, float('nan')
 
     pressure = 1048576 - pressureData
-    pressure = (pressure - (var2 / 4096)) * 6250 / var1
-    var1 = presCal[8] * pressure * pressure / 2147483648
-    var2 = pressure * presCal[7] / 32768
-    pressure = pressure + (var1 + var2 + presCal[6]) / 1600
+    pressure = ((pressure << 31) - var2) * 3125 / var1
+    var1 = (presCal[8] * (pressure >> 13) * (pressure >> 13)) >> 25
+    var2 = (presCal[7] * pressure) >> 19
+    pressure = ((pressure + var1 + var2) >> 8) + (presCal[6] << 4)
+    pressure = pressure / 100
 
     return temperature, pressure
 
