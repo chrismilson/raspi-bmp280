@@ -124,8 +124,7 @@ calibrationData = getCalibrationData(bus)
 while True:
     temperature, pressure = getCalibratedData(bus, calibrationData)
     # clear the line
-    print('\x1b[1K', end='\t')
     # print the temperature
-    print(f'The temperature is: {temperature}°C', end='\t')
+    print(f'\x1b[1KThe temperature is: {temperature}°C', end='\t')
     print(f'The pressure is {pressure}hPa', end='\r')
     time.sleep(1)
