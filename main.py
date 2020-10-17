@@ -52,12 +52,12 @@ def init(bus):
     bus.write_byte_data(
         DEVICE_ADDRESS,
         DEVICE_REG_CTRL_MEAS,
-        OSRS_T_X1 | OSRS_P_X4 | POWER_MODE_NORMAL
+        OSRS_T_X2 | OSRS_P_X16 | POWER_MODE_NORMAL
     )
     bus.write_byte_data(
         DEVICE_ADDRESS,
         DEVICE_REG_CONFIG,
-        STANDBY_TIME_1000MS | FILTER_COEF_4
+        STANDBY_TIME_0_5MS | FILTER_COEF_16
     )
     time.sleep(0.5)
 
@@ -127,4 +127,4 @@ while True:
     print(f'The temperature is: {temperature}°C')
     print(f'The pressure is {pressure}hPa')
     print()
-    time.sleep(1)
+    time.sleep(0.001)
