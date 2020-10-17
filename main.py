@@ -112,7 +112,7 @@ def getCalibratedData(bus, calibrationData=None):
     pressure = (pressure - (var2 / 4096)) * 6250 / var1
     var1 = presCal[8] * pressure * pressure / 2147483648
     var2 = pressure * presCal[7] / 32768
-    pressure = pressure + (var1 + var2 + presCal[6]) / 16
+    pressure = pressure + (var1 + var2 + presCal[6]) / 1600
 
     return temperature, pressure
 
@@ -123,8 +123,8 @@ calibrationData = getCalibrationData(bus)
 
 while True:
     temperature, pressure = getCalibratedData(bus, calibrationData)
-    # clear the line
-    # print the temperature
-    print(f'\x1b[1KThe temperature is: {temperature}°C', end='\t')
-    print(f'The pressure is {pressure}hPa', end='\r')
+
+    print(f'The temperature is: {temperature}°C')
+    print(f'The pressure is {pressure}hPa')
+    print()
     time.sleep(1)
