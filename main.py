@@ -112,7 +112,7 @@ def getCalibratedData(bus, calibrationData=None):
         return temperature, float('nan')
 
     pressure = 1048576 - pressureData
-    pressure = ((pressure << 31) - var2) * 3125 / var1
+    pressure = ((pressure << 31) - var2) * 3125 // var1
     var1 = (presCal[8] * (pressure >> 13) * (pressure >> 13)) >> 25
     var2 = (presCal[7] * pressure) >> 19
     pressure = ((pressure + var1 + var2) >> 8) + (presCal[6] << 4)
