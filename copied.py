@@ -61,8 +61,8 @@ time.sleep(0.5)
 # Temperature xLSB, Humidity MSB, Humidity LSB
 data = bus.read_i2c_block_data(0x76, 0xF7, 8)
 # Convert pressure and temperature data to 19-bits
-adc_p = ((data[0] * 65536) + (data[1] * 256) + (data[2] & 0xF0)) / 16
-adc_t = ((data[3] * 65536) + (data[4] * 256) + (data[5] & 0xF0)) / 16
+adc_p = ((data[0] << 16) | (data[1] << 8) | data[2]) >> 4
+adc_t = ((data[3] << 16) | (data[4] << 8) | data[5]) >> 4
 # Temperature offset calculations
 var1 = ((adc_t) / 16384.0 - (dig_T1) / 1024.0) * (dig_T2)
 var2 = (((adc_t) / 131072.0 - (dig_T1) / 8192.0) *
