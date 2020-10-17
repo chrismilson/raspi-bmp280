@@ -86,7 +86,7 @@ def getCalibratedData(bus, calibrationData=None):
     pressureData = ((buffer[0] << 16) | (buffer[1] << 8) | buffer[2]) >> 4
     temperatureData = ((buffer[3] << 16) | (buffer[4] << 8) | buffer[5]) >> 4
 
-    tempCal, presCal = calibrationData
+    tempCal, presCal = calibrationData[:3], calibrationData[3:]
 
     # This process for calculating the temperature and pressure is from the
     # documentation. It is done in such a way that no registers will overflow,
