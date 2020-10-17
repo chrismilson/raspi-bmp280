@@ -52,12 +52,12 @@ def init(bus):
     bus.write_byte_data(
         DEVICE_ADDRESS,
         DEVICE_REG_CTRL_MEAS,
-        OSRS_T_X2 | OSRS_P_X16 | POWER_MODE_NORMAL
+        OSRS_T_X2 | OSRS_P_X8 | POWER_MODE_NORMAL
     )
     bus.write_byte_data(
         DEVICE_ADDRESS,
         DEVICE_REG_CONFIG,
-        STANDBY_TIME_0_5MS | FILTER_COEF_16
+        STANDBY_TIME_500MS | FILTER_COEF_4
     )
     time.sleep(0.5)
 
@@ -70,7 +70,7 @@ def getCalibrationData(bus):
 
     # There are three temperature values and nine pressure values.
     for i in range(12):
-        val = (buffer[2 * i] << 8) | buffer[2 * i + 1]
+        val = (buffer[2 * i + 1] << 8) | buffer[2 * i]
         if i != 0 and i != 3 and val >= 1 << 15:
             val -= 1 << 16
 
